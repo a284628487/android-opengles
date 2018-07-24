@@ -6,6 +6,6 @@ attribute vec2 vCoord;
 varying vec2 textureCoordinate;
 
 void main() {
-    gl_Position = vPosition;
+    gl_Position = vMatrix * vPosition;
     textureCoordinate = vCoord;
 }

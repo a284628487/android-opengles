@@ -6,6 +6,7 @@ import android.media.MediaPlayer;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
+import android.opengl.Matrix;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -112,27 +113,19 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
         float[] matrix = new float[16];
-        Gl2Utils.getShowMatrix(matrix, 512, 288, width, height);
-        String s0 = "";
-        for (int i = 0; i < matrix.length; i++) {
-            s0 += matrix[i] + ", ";
-        }
-        // 2.7654321, 0.0, 0.0, 0.0,
-        // 0.0, 1.0, 0.0, 0.0,
-        // 0.0, 0.0, -1.0, 0.0,
-        // 0.0, 0.0, -1.0, 1.0,
-        Log.e(TAG, s0);
+        int w = 640;
+        int h = 360;
+        Gl2Utils.getShowMatrix(matrix, w, h, width, height);
+        mFilter.setMatrix(matrix);
+    }
 
-        MatrixUtils.rotate(matrix, 90);
-        String s = "";
-        for (int i = 0; i < matrix.length; i++) {
-            s += matrix[i] + ", ";
-        }
-        // -1.2088088E-7, 1.0, 0.0, 0.0,
-        // -2.7654321, -4.371139E-8, -0.0, 0.0,
-        // 0.0, 0.0, -1.0, 0.0,
-        // 0.0, 0.0, -1.0, 1.0,
-        Log.e(TAG, s);
+    // un-reached
+    private void roatete90(int width, int height) {
+        float[] matrix = new float[16];
+        int w = 640;
+        int h = 360;
+        Gl2Utils.rotate(matrix, 90);
+        Gl2Utils.getShowMatrix(matrix, w, h, height, width);
         mFilter.setMatrix(matrix);
     }
 

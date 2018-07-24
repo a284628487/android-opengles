@@ -55,8 +55,8 @@ public class CameraActivity extends Activity implements Renderer {
                 viewHeight);
         // 计算坐标信息
         if (cameraId == 1) {
-            Gl2Utils.flip(matrix, true, false);
-            Gl2Utils.rotate(matrix, 180);
+//            Gl2Utils.flip(matrix, true, false);
+//            Gl2Utils.rotate(matrix, 180);
         } else {
             // Gl2Utils.rotate(matrix, 45);
         }

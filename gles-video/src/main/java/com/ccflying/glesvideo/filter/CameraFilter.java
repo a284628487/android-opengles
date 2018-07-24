@@ -95,10 +95,10 @@ public abstract class CameraFilter {
 
     // 纹理坐标-原始坐标
     protected float[] coordOriginal = { //
-            0.0f, -0.389f, // 左上
-            0.0f, 1.389f, // 左下
-            1.0f, -0.389f, // 右上
-            1.0f, 1.389f, // 右下
+            0.0f, 0f, // 左上
+            0.0f, 1f, // 左下
+            1.0f, 0f, // 右上
+            1.0f, 1f, // 右下
     };
 
     private boolean isBackCamera;
