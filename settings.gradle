@@ -1,0 +1,1 @@
+include ':app', ':gles-video', ':base', ':gles-polygon'
