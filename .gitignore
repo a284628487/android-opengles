@@ -6,8 +6,6 @@
 /build
 /captures
 /app
-/3d
 .externalNativeBuild
 /*/build
-/gles-video
 /base
