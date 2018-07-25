@@ -21,6 +21,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.camera_front:
                 startActivity(new Intent(this, CameraActivity.class).putExtra("cid", 1));
                 break;
+            case R.id.camera_touch:
+                startActivity(new Intent(this, CameraActivity.class)
+                        .putExtra("cid", 0)
+                        .putExtra("touch", 1));
+                break;
             case R.id.camera_l9:
                 startActivity(new Intent(this, CameraL9Activity.class));
                 break;

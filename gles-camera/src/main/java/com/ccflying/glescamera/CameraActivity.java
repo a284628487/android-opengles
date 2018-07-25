@@ -26,18 +26,20 @@ import android.opengl.GLSurfaceView.Renderer;
 import android.opengl.Matrix;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.method.Touch;
 import android.util.Log;
 import android.view.View;
 
 import com.ccflying.glescamera.filter.CameraFilter;
 import com.ccflying.glescamera.filter.GrayFilter;
+import com.ccflying.glescamera.filter.TouchFilter;
 import com.ccflying.glescamera.util.Gl2Utils;
 
 @SuppressLint("NewApi")
 public class CameraActivity extends Activity implements Renderer {
     private float[] matrix = new float[16];
     final String TAG = "CameraActivity";
-    private GLSurfaceView mSurfaceView;
+    private MyGLSurfaceView mSurfaceView;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
     private CameraFilter mFilter;
@@ -45,14 +47,16 @@ public class CameraActivity extends Activity implements Renderer {
     private int textureId = 0;
     private int cameraId = 0;
 
+    private int touch = 0;
+
     private int viewWidth, viewHeight;
+    private float mAspectRatio = 1;
 
     private LinkedList<Runnable> mRunAfterList = new LinkedList<Runnable>();
 
     private void calculateMatrix() {
         matrix = new float[16];
-        Gl2Utils.getShowMatrix(matrix, viewWidth, viewHeight, viewWidth,
-                viewHeight);
+        Gl2Utils.getShowMatrix(matrix, viewWidth, viewHeight, viewWidth, viewHeight);
         // 计算坐标信息
         if (cameraId == 1) {
 //            Gl2Utils.flip(matrix, true, false);
@@ -73,12 +77,15 @@ public class CameraActivity extends Activity implements Renderer {
         mSurfaceView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         // mFilter = new NoFilter(getResources(), cameraId == 0);
         cameraId = getIntent().getIntExtra("cid", 0);
-        mFilter = new GrayFilter(getResources(), cameraId == 0);
-        // mFilter = new OverlayFilter(getResources());
+        touch = getIntent().getIntExtra("touch", 0);
+        if (touch == 1) {
+            mFilter = new TouchFilter(getResources(), cameraId == 0);
+        } else {
+            mFilter = new GrayFilter(getResources(), cameraId == 0);
+        }
     }
 
-    private void openCameraAndPreview(final SurfaceTexture surface,
-                                      final int width, final int height) {
+    private void openCameraAndPreview(final SurfaceTexture surface) {
         mCamera = Camera.open(cameraId);
         try {
             OnFrameAvailableListener listener = new OnFrameAvailableListener() {
@@ -113,17 +120,22 @@ public class CameraActivity extends Activity implements Renderer {
         stopCamera();
     }
 
+    @Override
     public void onSurfaceChanged(GL10 arg0, int width, int height) {
         GLES20.glViewport(0, 0, width, height);
-        this.viewHeight = width;
-        this.viewWidth = height;
+        this.viewHeight = height;
+        this.viewWidth = width;
         calculateMatrix();
+        mAspectRatio = width * 1 / height;
     }
 
     @Override
     public void onDrawFrame(GL10 arg0) {
         if (null != mSurfaceTexture) {
             mSurfaceTexture.updateTexImage();
+        }
+        if (touch == 1) {
+            ((TouchFilter) mFilter).setTouchXY(mSurfaceView.getTouchPosition(), viewHeight * 1f / viewWidth);
         }
         // TODO - Filter
         mFilter.onDrawFrame();
@@ -135,10 +147,11 @@ public class CameraActivity extends Activity implements Renderer {
         mRunAfterList.clear();
     }
 
+    @Override
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
         textureId = createTextureID();
         mSurfaceTexture = new SurfaceTexture(textureId);
-        openCameraAndPreview(mSurfaceTexture, 0, 0);
+        openCameraAndPreview(mSurfaceTexture);
         // TODO - Created
         mFilter.setTextureId(textureId);
         mFilter.onSurfaceCreated();
