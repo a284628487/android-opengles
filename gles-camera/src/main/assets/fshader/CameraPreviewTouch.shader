@@ -8,6 +8,8 @@ varying vec2 textureCoordinate;
 varying vec2 fTouch;
 uniform float aXY;
 
+varying vec2 varyPosition;
+
 vec4 changeColor(vec4 inputColor) {
     float r = (inputColor.r > 0.55) ? 1.0 : 0.0;
     float g = (inputColor.g > 0.55) ? 1.0 : 0.0;
@@ -21,7 +23,7 @@ vec4 changeColor(vec4 inputColor) {
 void main() {
     vec4 oriColor = texture2D(vTexture, textureCoordinate);
 
-    if(distance(fTouch, vec2(textureCoordinate.x, textureCoordinate.y / aXY)) < 0.10) {
+    if(distance(vec2(fTouch.x, fTouch.y * aXY), vec2(varyPosition.x, varyPosition.y * aXY)) < 0.20) {
         gl_FragColor = changeColor(oriColor);
         return;
     }
