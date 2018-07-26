@@ -52,3 +52,17 @@ vec4:
 - `x, y, z, w` // 坐标
 - `r, g, b, a` // 颜色值
 - `s, t, p, q` // 纹理
+
+## Built-in Functions
+
+### Geometric Functions:
+
+```Java
+- float dot(genType x, genType y)
+  x[0]*y[0] + x[1]*y[1] + ...
+- float distance(genType p0, genType p1)
+  the distance between p0 and p1
+- genType mix(genType x, genType y, float a)
+- genType mix(genType x, genType y, genType a)
+  return linear blend of x and y: x*(1 - a) + y * a
+```
