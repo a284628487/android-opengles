@@ -66,3 +66,5 @@ vec4:
 - genType mix(genType x, genType y, genType a)
   return linear blend of x and y: x*(1 - a) + y * a
 ```
+
+[Link](https://www.khronos.org/registry/OpenGL/specs/gl/GLSLangSpec.4.50.pdf)
