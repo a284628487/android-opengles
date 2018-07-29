@@ -1,1 +1,1 @@
-include ':app', ':gles-video', ':base', ':gles-polygon', ':gles-texture', ':gles-matrix', ':gles-camera'
+include ':app', ':gles-video', ':base', ':gles-polygon', ':gles-texture', ':gles-matrix', ':gles-camera', ':gles-mediaeffect'
