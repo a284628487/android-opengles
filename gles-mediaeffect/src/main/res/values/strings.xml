@@ -24,4 +24,5 @@
     <string name="temperature">Temperature</string>
     <string name="tint">Tint</string>
     <string name="vignette">Vignette</string>
+    <!--/frameworks/base/media/mca/effect/java/android/media/effect/effects/-->
 </resources>
