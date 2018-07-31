@@ -165,6 +165,7 @@ public class TextureRenderer {
                 y1 = relativeAspectRatio;
             }
             float[] coords = new float[]{x0, y0, x1, y0, x0, y1, x1, y1};
+            // 根据View的宽度和Bitmap的宽高调整顶点坐标值。
             mPosVertices.put(coords).position(0);
         }
     }
