@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         int textureId = createTextureID();
         mSurfaceTexture = new SurfaceTexture(textureId);
+        mSurfaceTexture.setDefaultBufferSize(720, 1280);
         mSurface = new Surface(mSurfaceTexture);
         openCamera();
         // TODO
