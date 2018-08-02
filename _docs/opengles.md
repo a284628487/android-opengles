@@ -36,14 +36,13 @@ OpenGL允许创建自己的着色器Shader，且需同时创建两个Shader，�
 其中，Shader对象与Program对象就相当于编译器与链接器。Shader对象载入源码，然后编译成Object形式（就像C源码编译成 .obj文件）。经过编译的Shader就可以装配到 Program对象中，每个Program对象必须装配两个Shader对象：一个顶点Shader，一个片元 Shader，然后Program对象被链接成“可执行文件”。这样就可以在Render中使用该“可执行文件”进行渲染操作。
 因此，通过创建着色器Shader，并将视频增强算法集成到渲染模块的片段着色器中，就可方便地实现视频的增强处理与渲染。
 
-[1] OPENGL ES 3.0编程指南.
-[2] OpenGL ES应用开发实践指南 (Android 卷).
-[3] OpenGL / OpenGL ES Reference Compiler.
+1. OPENGL ES 3.0编程指南.
+2. OpenGL ES应用开发实践指南 (Android 卷).
+3. OpenGL / OpenGL ES Reference Compiler.
 https://www.khronos.org/opengles/sdk/tools/Reference-Compiler/
-[4] GLSL optimizer. https://github.com/aras-p/glsl-optimizer
-[5] Graphics Shaders: Theory and Practice (Second Edition).
-[6] GT工具. http://gt.qq.com/index.html
-
+4. GLSL optimizer. https://github.com/aras-p/glsl-optimizer
+5. Graphics Shaders: Theory and Practice (Second Edition).
+6. GT工具. http://gt.qq.com/index.html
 
 google: opengl es video texture
 
