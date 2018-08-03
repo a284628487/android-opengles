@@ -14,8 +14,7 @@
 - Supports both on-demand and continuous rendering.
     支持条件渲染以及一直不停渲染两种模式。
 
-
-### Start
+## Start
 
 通常使用`GLSurfaceView`，都是继承自它并且根据需要重写它的方法，比如对用户的输入做特殊的处理。
 如果我们的应用不需要响应输入事件，则直接使用它。和普通的View不同的是，绘制(drawing)操作是在一个分离出来的叫`Renderer`的对象中进行，而不是`onDraw`。
@@ -30,16 +29,18 @@
 `GLSurfaceView`默认创建的`Surface`是**PixelFormat.RGB_888**格式的，如果需要使用带透明度的Surface，可以使用
 `getHolder().setFormat(PixelFormat.TRANSLUCENT)`实现。
 
-### Debug
+## Debug
 
 在`setRenderer`之前调用`setDebugFlags()`和`setGLWrapper()`。
 
-### Life-cycle
+## Life-cycle
 
 当`Activity` pause 和 resume 的时候，也需要调用GLSurfaceView的生命周期方法`onPause`和`onResume()`。
 这两个操作会使 `GLSurfaceView` pause / resume 渲染线程。
 
-### Handling events
+## Method
+
+### queueEvent()
 
 可以通过`queueEvent(Runnable run)`提交一个`Runnable`和`Renderer`直接交互，这个`Runnable`在每次`onDrawFrame`之前被调用。
 
@@ -66,4 +67,40 @@ class MyGLSurfaceView extends GLSurfaceView {
         return super.onKeyDown(keyCode, event);
     }
 }
+```
+
+### requestRender()
+当`RENDER_MODE`被设置成为`RENDERMODE_WHEN_DIRTY`时，如果需要重新绘制，则可以调用该函数进行绘制。可以在任意线程调用，比如图片滤镜的时候用户切换了一个新的滤镜之后，则需要重新绘制。
+
+## Renderer
+
+```Java
+    public interface Renderer {
+        /**
+         * Called when the surface is created or recreated.
+         */
+        void onSurfaceCreated(GL10 gl, EGLConfig config);
+
+        /**
+         * Surface的第一次创建完成后，或者大小发生改变时，需要对画面进行适配修改。
+         * void onSurfaceChanged(GL10 gl, int width, int height) {
+         *     gl.glViewport(0, 0, width, height);
+         *     // for a fixed camera, set the projection too
+         *     float ratio = (float) width / height;
+         *     gl.glMatrixMode(GL10.GL_PROJECTION);
+         *     gl.glLoadIdentity();
+         *     gl.glFrustumf(-ratio, ratio, -1, 1, 1, 10);
+         * }
+         */
+        void onSurfaceChanged(GL10 gl, int width, int height);
+
+        /**
+         * 绘制当前Frame，通常绘制工作前使用glClear清空之前的内容。
+         * void onDrawFrame(GL10 gl) {
+         *     GLES20.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+         *     //... other gl calls to render the scene ...
+         * }
+         */
+        void onDrawFrame(GL10 gl);
+    }
 ```
