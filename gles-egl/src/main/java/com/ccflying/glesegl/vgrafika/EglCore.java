@@ -27,28 +27,25 @@ import android.util.Log;
 import android.view.Surface;
 
 /**
- * Core EGL state (display, context, config).
- * <p>
- * The EGLContext must only be attached to one thread at a time.  This class is not thread-safe.
+ * EGLContext 在同一时刻，只能附加到一个线程中。
+ * 该类用于创建EGL环境，管理 Core EGL state (display, context, config).
  */
 public final class EglCore {
     private static final String TAG = "EglCore";
 
     /**
-     * Constructor flag: surface must be recordable.  This discourages EGL from using a
-     * pixel format that cannot be converted efficiently to something usable by the video
-     * encoder.
+     * flag: 可录制的Surface，这将阻止EGL使用pixel format
+     * (pixel format不能高效的被video encoder转换)
      */
     public static final int FLAG_RECORDABLE = 0x01;
 
-    /**
-     * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this
-     * flag, GLES2 is used.
-     */
-    public static final int FLAG_TRY_GLES3 = 0x02;
-
     // Android-specific extension.
     private static final int EGL_RECORDABLE_ANDROID = 0x3142;
+
+    /**
+     * flag: 使用GLES3
+     */
+    public static final int FLAG_TRY_GLES3 = 0x02;
 
     private EGLDisplay mEGLDisplay = EGL14.EGL_NO_DISPLAY;
     private EGLContext mEGLContext = EGL14.EGL_NO_CONTEXT;
@@ -58,25 +55,16 @@ public final class EglCore {
 
     /**
      * Prepares EGL display and context.
-     * <p>
-     * Equivalent to EglCore(null, 0).
      */
     public EglCore() {
         this(null, 0);
     }
 
     /**
-     * Prepares EGL display and context.
-     * <p>
-     *
      * @param sharedContext The context to share, or null if sharing is not desired.
      * @param flags         Configuration bit flags, e.g. FLAG_RECORDABLE.
      */
     public EglCore(EGLContext sharedContext, int flags) {
-        if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
-            throw new RuntimeException("EGL already set up");
-        }
-
         if (sharedContext == null) {
             sharedContext = EGL14.EGL_NO_CONTEXT;
         }
@@ -91,9 +79,8 @@ public final class EglCore {
             throw new RuntimeException("unable to initialize EGL14");
         }
 
-        // Try to get a GLES3 context, if requested.
-        if ((flags & FLAG_TRY_GLES3) != 0) {
-            //Log.d(TAG, "Trying GLES 3");
+        // 尝试加载ELGS3
+        if ((flags & FLAG_TRY_GLES3) != 0) { // flags = FLAG_TRY_GLES3
             EGLConfig config = getConfig(flags, 3);
             if (config != null) {
                 int[] attrib3_list = {
@@ -111,8 +98,8 @@ public final class EglCore {
                 }
             }
         }
+        // 如果mEGLContext为空，则加载ELGS2
         if (mEGLContext == EGL14.EGL_NO_CONTEXT) {  // GLES 2 only, or GLES 3 attempt failed
-            //Log.d(TAG, "Trying GLES 2");
             EGLConfig config = getConfig(flags, 2);
             if (config == null) {
                 throw new RuntimeException("Unable to find a suitable EGLConfig");
@@ -148,9 +135,8 @@ public final class EglCore {
             renderableType |= EGLExt.EGL_OPENGL_ES3_BIT_KHR;
         }
 
-        // The actual surface is generally RGBA or RGBX, so situationally omitting alpha
-        // doesn't really help.  It can also lead to a huge performance hit on glReadPixels()
-        // when reading into a GL_RGBA buffer.
+        // 实际的表面通常是 RGBA 或 RGBX, 所以alpha并不一定有作用?甚至它还会导致性能问题
+        // 当使用glReadPixels()来读取 RGBA buffer的时候。
         int[] attribList = {
                 EGL14.EGL_RED_SIZE, 8,
                 EGL14.EGL_GREEN_SIZE, 8,
@@ -159,9 +145,10 @@ public final class EglCore {
                 //EGL14.EGL_DEPTH_SIZE, 16,
                 //EGL14.EGL_STENCIL_SIZE, 8,
                 EGL14.EGL_RENDERABLE_TYPE, renderableType,
-                EGL14.EGL_NONE, 0,      // placeholder for recordable [@-3]
+                EGL14.EGL_NONE, 0, // placeholder for recordable [@-3]
                 EGL14.EGL_NONE
         };
+        // flags = FLAG_RECORDABLE，可录制的Surface。
         if ((flags & FLAG_RECORDABLE) != 0) {
             attribList[attribList.length - 3] = EGL_RECORDABLE_ANDROID;
             attribList[attribList.length - 2] = 1;
@@ -177,19 +164,16 @@ public final class EglCore {
     }
 
     /**
-     * Discards all resources held by this class, notably the EGL context.  This must be
-     * called from the thread where the context was created.
-     * <p>
-     * On completion, no context will be current.
+     * 释放资源，禁用EGLContext，必须在创建EGLContext的线程中调用该方法。
      */
     public void release() {
         if (mEGLDisplay != EGL14.EGL_NO_DISPLAY) {
-            // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
-            // every eglInitialize() we need an eglTerminate().
+            // @1
             EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
                     EGL14.EGL_NO_CONTEXT);
             EGL14.eglDestroyContext(mEGLDisplay, mEGLContext);
             EGL14.eglReleaseThread();
+            //
             EGL14.eglTerminate(mEGLDisplay);
         }
 
@@ -215,23 +199,20 @@ public final class EglCore {
     }
 
     /**
-     * Destroys the specified surface.  Note the EGLSurface won't actually be destroyed if it's
-     * still current in a context.
+     * 销毁EGLSurface. 注意如果EGLSurface仍然还在EGLContext中，该EGLSurface并不会被销毁。
      */
     public void releaseSurface(EGLSurface eglSurface) {
         EGL14.eglDestroySurface(mEGLDisplay, eglSurface);
     }
 
     /**
-     * Creates an EGL surface associated with a Surface.
-     * <p>
-     * If this is destined for MediaCodec, the EGLConfig should have the "recordable" attribute.
+     * 创建一个EGLSurface关联到外部传入的Surface.
+     * 如果Surface供MediaCodec消费使用，则EGLConfig需要有"recordable"属性.
      */
     public EGLSurface createWindowSurface(Object surface) {
         if (!(surface instanceof Surface) && !(surface instanceof SurfaceTexture)) {
             throw new RuntimeException("invalid surface: " + surface);
         }
-
         // Create a window surface, and attach it to the Surface we received.
         int[] surfaceAttribs = {
                 EGL14.EGL_NONE
@@ -246,7 +227,7 @@ public final class EglCore {
     }
 
     /**
-     * Creates an EGL surface associated with an offscreen buffer.
+     * 创建一个关联到离屏渲染(offscreen buffer)的EGLSurface.
      */
     public EGLSurface createOffscreenSurface(int width, int height) {
         int[] surfaceAttribs = {
@@ -264,26 +245,18 @@ public final class EglCore {
     }
 
     /**
-     * Makes our EGL context current, using the supplied surface for both "draw" and "read".
+     * Makes our EGL context current, 传入的eglSurface将同时使用到draw和read.
      */
     public void makeCurrent(EGLSurface eglSurface) {
-        if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
-            // called makeCurrent() before create?
-            Log.d(TAG, "NOTE: makeCurrent w/o display");
-        }
         if (!EGL14.eglMakeCurrent(mEGLDisplay, eglSurface, eglSurface, mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent failed");
         }
     }
 
     /**
-     * Makes our EGL context current, using the supplied "draw" and "read" surfaces.
+     * Makes our EGL context current, 指定两个eglSurface分别用于draw和read.
      */
     public void makeCurrent(EGLSurface drawSurface, EGLSurface readSurface) {
-        if (mEGLDisplay == EGL14.EGL_NO_DISPLAY) {
-            // called makeCurrent() before create?
-            Log.d(TAG, "NOTE: makeCurrent w/o display");
-        }
         if (!EGL14.eglMakeCurrent(mEGLDisplay, drawSurface, readSurface, mEGLContext)) {
             throw new RuntimeException("eglMakeCurrent(draw,read) failed");
         }
@@ -300,16 +273,14 @@ public final class EglCore {
     }
 
     /**
-     * Calls eglSwapBuffers.  Use this to "publish" the current frame.
-     *
-     * @return false on failure
+     * Calls eglSwapBuffers. Use this to "publish" the current frame.
      */
     public boolean swapBuffers(EGLSurface eglSurface) {
         return EGL14.eglSwapBuffers(mEGLDisplay, eglSurface);
     }
 
     /**
-     * Sends the presentation time stamp to EGL.  Time is expressed in nanoseconds.
+     * 设置PresentationTime, Time is expressed in nanoseconds.
      */
     public void setPresentationTime(EGLSurface eglSurface, long nsecs) {
         EGLExt.eglPresentationTimeANDROID(mEGLDisplay, eglSurface, nsecs);

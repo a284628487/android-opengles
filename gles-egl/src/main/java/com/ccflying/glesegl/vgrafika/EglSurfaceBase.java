@@ -30,16 +30,14 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * Common base class for EGL surfaces.
- * <p>
- * There can be multiple surfaces associated with a single context.
+ * EGL surfaces基类，一个EGLContext可以关联到多个Surface
  */
 public class EglSurfaceBase {
     protected static final String TAG = "EglSurfaceBase";
 
-    // EglCore object we're associated with.  It may be associated with multiple surfaces.
+    // EGL环境管理器，It may be associated with multiple surfaces.
     protected EglCore mEglCore;
-
+    // EGLSurface
     private EGLSurface mEGLSurface = EGL14.EGL_NO_SURFACE;
     private int mWidth = -1;
     private int mHeight = -1;
@@ -49,8 +47,7 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Creates a window surface.
-     * <p>
+     * 创建WindowSurface
      *
      * @param surface May be a Surface or SurfaceTexture.
      */
@@ -58,8 +55,8 @@ public class EglSurfaceBase {
         if (mEGLSurface != EGL14.EGL_NO_SURFACE) {
             throw new IllegalStateException("surface already created");
         }
+        // createWindowSurface
         mEGLSurface = mEglCore.createWindowSurface(surface);
-
         // Don't cache width/height here, because the size of the underlying surface can change
         // out from under us (see e.g. HardwareScalerActivity).
         //mWidth = mEglCore.querySurface(mEGLSurface, EGL14.EGL_WIDTH);
@@ -67,12 +64,13 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Creates an off-screen surface.
+     * 创建离屏的surface.
      */
     public void createOffscreenSurface(int width, int height) {
         if (mEGLSurface != EGL14.EGL_NO_SURFACE) {
             throw new IllegalStateException("surface already created");
         }
+        // createOffscreenSurface
         mEGLSurface = mEglCore.createOffscreenSurface(width, height);
         mWidth = width;
         mHeight = height;
@@ -86,28 +84,21 @@ public class EglSurfaceBase {
      * callback).  The size should match after the next buffer swap.
      */
     public int getWidth() {
-        if (mWidth < 0) {
-            return mEglCore.querySurface(mEGLSurface, EGL14.EGL_WIDTH);
-        } else {
-            return mWidth;
-        }
+        return (mWidth < 0) ? mEglCore.querySurface(mEGLSurface, EGL14.EGL_WIDTH) : mWidth;
     }
 
     /**
      * Returns the surface's height, in pixels.
      */
     public int getHeight() {
-        if (mHeight < 0) {
-            return mEglCore.querySurface(mEGLSurface, EGL14.EGL_HEIGHT);
-        } else {
-            return mHeight;
-        }
+        return (mHeight < 0) ? mEglCore.querySurface(mEGLSurface, EGL14.EGL_HEIGHT) : mHeight;
     }
 
     /**
      * Release the EGL surface.
      */
     public void releaseEglSurface() {
+        // 仅仅是releaseSurface, 并没有release EGL 环境
         mEglCore.releaseSurface(mEGLSurface);
         mEGLSurface = EGL14.EGL_NO_SURFACE;
         mWidth = mHeight = -1;
@@ -129,9 +120,7 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Calls eglSwapBuffers.  Use this to "publish" the current frame.
-     *
-     * @return false on failure
+     * Calls eglSwapBuffers. 更新当前Frame到WindowSurface.
      */
     public boolean swapBuffers() {
         boolean result = mEglCore.swapBuffers(mEGLSurface);
@@ -142,18 +131,14 @@ public class EglSurfaceBase {
     }
 
     /**
-     * Sends the presentation time stamp to EGL.
-     *
-     * @param nsecs Timestamp, in nanoseconds.
+     * @param nsecs Timestamp, in nanoseconds. 设置时间
      */
     public void setPresentationTime(long nsecs) {
         mEglCore.setPresentationTime(mEGLSurface, nsecs);
     }
 
     /**
-     * Saves the EGL surface to a file.
-     * <p>
-     * Expects that this object's EGL surface is current.
+     * 将当前Frame保存成文件。
      */
     public void saveFrame(File file) throws IOException {
         if (!mEglCore.isCurrent(mEGLSurface)) {

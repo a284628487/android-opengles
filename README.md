@@ -1,10 +1,10 @@
 ## Introduction
 
-[About OpenGL ES](https://github.com/a284628487/android-opengles/blob/master/_docs/opengles.md)
-[OpenGL Shading Language](https://github.com/a284628487/android-opengles/blob/master/_docs/glsl.md)
+- [About OpenGL ES](https://github.com/a284628487/android-opengles/blob/master/_docs/opengles.md)
+- [OpenGL Shading Language](https://github.com/a284628487/android-opengles/blob/master/_docs/glsl.md)
 
-[GLSurfaceView](https://github.com/a284628487/android-opengles/blob/master/_docs/glsurfaceview.md)
-[SurfaceTexture](https://github.com/a284628487/android-opengles/blob/master/_docs/surfacetexture.md)
+- [GLSurfaceView](https://github.com/a284628487/android-opengles/blob/master/_docs/glsurfaceview.md)
+- [SurfaceTexture](https://github.com/a284628487/android-opengles/blob/master/_docs/surfacetexture.md)
 
 ## App
 
@@ -12,6 +12,9 @@
 There are two type of graphics:
 1. Basic graphics including Triangle, Circle, Square, Oval
 2. Three dimensional graphics including Cone, Cube, Cylinder
+
+### [egl](https://github.com/a284628487/android-opengles/tree/master/gles-egl)
+Manage the EGL Thread manually instead of use GLSurfaceView which has created an EGL Environment for us.
 
 ### [Texture](https://github.com/a284628487/android-opengles/tree/master/gles-texture)
 Showing Bitmap as Texture, and add filter to the Texture.

@@ -26,27 +26,18 @@ import android.graphics.SurfaceTexture;
 
 
 /**
- * Simple demonstration of using GLES to draw on a TextureView.
+ * 和GLSurfaceView不同，TextureView并不管理EGLConfig或者渲染线程，所以得由我们自己创建线程来管理。
+ * rendering步骤：
  * <p>
- * Note that rendering is a multi-stage process:
- * <ol>
- * <li>Render thread draws with GL on its local EGLSurface, a window surface it created.  The
+ * 1. Render thread draws with GL on its local EGLSurface, a window surface it created.  The
  * window surface is backed by the SurfaceTexture from TextureVIew.
- * <li>The SurfaceTexture takes what is rendered onto it and makes it available as a GL texture.
- * <li>TextureView takes the GL texture and renders it onto its EGLSurface.  That EGLSurface
+ * 2. The SurfaceTexture takes what is rendered onto it and makes it available as a GL texture.
+ * 3. TextureView takes the GL texture and renders it onto its EGLSurface. That EGLSurface
  * is a window surface visible to the compositor.
- * </ol>
- * It's important to bear in mind that Surface and EGLSurface are related but very
- * different things.
  * <p>
- * Unlike GLSurfaceView, TextureView doesn't manage the EGL config or renderer thread, so we
- * take care of that ourselves.
+ * Surface和EGLSurface是相关联的，但它们是完全不同的事物
  * <p>
- * Currently renders frames as fast as possible, without waiting for the consumer.
- * <p>
- * As part of experimenting with the framework, this allows the renderer thread to continue
- * to run as the TextureView is being destroyed (we stop the thread in onDestroy() rather
- * than onPause()).  Normally the renderer would be stopped when the application pauses.
+ * 作为示例，只有当onDestroy()的时候，才停止渲染线程，实际是，应该在onPause()中就停止。
  */
 public class TextureViewGLActivity extends Activity {
     private static final String TAG = "TextureViewGLActivity";
@@ -71,8 +62,8 @@ public class TextureViewGLActivity extends Activity {
         mRenderer = new Renderer();
         mRenderer.start();
 
-        // setContentView(R.layout.activity_texture_view_gl);
-        // mTextureView = (TextureView) findViewById(R.id.glTextureView);
+        mTextureView = new TextureView(this);
+        setContentView(mTextureView);
         mTextureView.setSurfaceTextureListener(mRenderer);
     }
 
@@ -110,9 +101,7 @@ public class TextureViewGLActivity extends Activity {
 
     /**
      * Handles GL rendering and SurfaceTexture callbacks.
-     * <p>
-     * We don't create a Looper, so the SurfaceTexture-by-way-of-TextureView callbacks
-     * happen on the UI thread.
+     * 不创建Looper，所以onSurface###将在主线程调用。
      */
     private static class Renderer extends Thread implements TextureView.SurfaceTextureListener {
         private Object mLock = new Object();        // guards mSurfaceTexture, mDone
@@ -129,8 +118,7 @@ public class TextureViewGLActivity extends Activity {
             while (true) {
                 SurfaceTexture surfaceTexture = null;
 
-                // Latch the SurfaceTexture when it becomes available.  We have to wait for
-                // the TextureView to create it.
+                // 等SurfaceTexture可用之后，再继续向下执行渲染操作。
                 synchronized (mLock) {
                     while (!mDone && (surfaceTexture = mSurfaceTexture) == null) {
                         try {
@@ -145,22 +133,23 @@ public class TextureViewGLActivity extends Activity {
                 }
                 Log.d(TAG, "Got surfaceTexture=" + surfaceTexture);
 
-                // Create an EGL surface for our new SurfaceTexture.  We're not on the same
-                // thread as the SurfaceTexture, which is a concern for the *consumer*, which
-                // wants to call updateTexImage().  Because we're the *producer*, i.e. the
-                // one generating the frames, we don't need to worry about being on the same
-                // thread.
-                mEglCore = new EglCore(null, EglCore.FLAG_TRY_GLES3);
+                // 使用SurfaceTexture创建EGL surface. 和SurfaceTexture不在同一线程。
+                // SurfaceTexture是作为消费者，可能需要updateTexImage()来更新EGL Surface.
+                // 而当前这个线程及EGL环境是生产者(生成Frame)
+                mEglCore = new EglCore(null, EglCore.FLAG_TRY_GLES3);// EglCore绑定到当前线程中。
+                // 创建WindowSurface。EglCore的flags为FLAG_TRY_GLES3，则为不可录制的EGLSurface.
                 WindowSurface windowSurface = new WindowSurface(mEglCore, mSurfaceTexture);
                 windowSurface.makeCurrent();
 
                 // Render frames until we're told to stop or the SurfaceTexture is destroyed.
                 doAnimation(windowSurface);
-
+                // 释放资源 -> eglDestroySurface
                 windowSurface.release();
+                // 释放资源 -> 销毁EGLContext环境
                 mEglCore.release();
                 if (!sReleaseInCallback) {
                     Log.i(TAG, "Releasing SurfaceTexture in renderer thread");
+                    // 释放SurfaceTexture
                     surfaceTexture.release();
                 }
             }
@@ -285,7 +274,7 @@ public class TextureViewGLActivity extends Activity {
 
         @Override   // will be called on UI thread
         public void onSurfaceTextureUpdated(SurfaceTexture st) {
-            //Log.d(TAG, "onSurfaceTextureUpdated");
+            // Log.d(TAG, "onSurfaceTextureUpdated");
         }
     }
 }
