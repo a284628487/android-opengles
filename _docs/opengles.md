@@ -1,3 +1,12 @@
+GPU绘制图形步骤：先确定图形的顶点，连接线条，再对图形的表面添加纹理或者着色处理。GPU 内部有两个功能处理单元GP（Geometry Processor几何处理单元）、PP（Pixel Processor像素处理单元）分别负责这两步操作。
+
+GPU的对外接口主要是EGL和GLES：
+
+1. EGL：一般图形系统像framebuffer、HIGO、directfb、QT、Android都有自己window、surface等概念，对应的GPU中也有自己的eglWindow、eglSurface，但是GPU无法直接操作其它平台上的window、surface，所以必须要有EGL作为媒介提供接口，如将framebuffer提供的window、surface封装成GPU可以识别的eglWindow、eglSurface。
+2. GLES：就是我们熟悉的openles 1.1 和 2.0 接口，主要负责绘制图形。
+
+> 普通的内存 ---(EGL内存封装)--> GPU可绘制的内存。
+
 GPU提供了大规模并行机制，特别适合于执行高度并行的渲染过程，这个“并行”的概念远超出平常在CPU上开的几十个线程，GPU的线程数可以达到上百万个或更多。GPU这种机制很适合用于图像像素的并行处理，大幅提升其计算效率。因此，最终确定将视频增强算法集成到渲染模块，利用GPU进行硬件加速，从而达到视频帧的实时增强处理。
 ## OpenGL图形渲染管线
 
