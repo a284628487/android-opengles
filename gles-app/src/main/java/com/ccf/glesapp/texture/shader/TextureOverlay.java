@@ -1,5 +1,6 @@
-package com.ccflying.glestexture;
+package com.ccf.glesapp.texture.shader;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.opengl.GLES20;
@@ -8,8 +9,8 @@ import android.opengl.GLUtils;
 import android.opengl.Matrix;
 import android.util.Log;
 
-import com.ccflying.glestexture.base.BaseRenderer;
-import com.ccflying.glestexture.util.ShaderUtils;
+import com.ccf.glesapp.R;
+import com.ccf.glesapp.util.Utils;
 
 import java.nio.FloatBuffer;
 
@@ -20,9 +21,10 @@ import javax.microedition.khronos.opengles.GL10;
  * Created by ccfyyn on 18/7/1.
  */
 
-public class TextureOverlay extends BaseRenderer {
+public class TextureOverlay implements GLSurfaceView.Renderer {
 
     final String TAG = "TextureOverlay";
+    private final Context mContext;
 
     private String vShaderFileName, fShaderFileName;
 
@@ -56,18 +58,20 @@ public class TextureOverlay extends BaseRenderer {
     private int textureId0;
     private int textureId1;
 
-    public TextureOverlay(GLSurfaceView view) {
-        super(view);
+    public TextureOverlay(Context context) {
+        this.mContext = context;
         vShaderFileName = "vshader/" + TAG + ".shader";
         fShaderFileName = "fshader/" + TAG + ".shader";
         //
         try {
-            mBitmap1 = BitmapFactory.decodeStream(view.getResources()
-                    .getAssets().open("mm.png"));
-            mBitmap2 = BitmapFactory.decodeResource(view.getResources(), R.drawable.ic_qrcode);
+            mBitmap1 = BitmapFactory.decodeStream(mContext.getAssets().open("mm.png"));
+            mBitmap2 = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.ic_qrcode);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        mGLPosition = Utils.allocateFloatBuffer(vertexCoords);
+        mTexture1Coord = Utils.allocateFloatBuffer(textureCoords1);
+        mOverlayCoord = Utils.allocateFloatBuffer(textureCoords2);
     }
 
     public void setBitmap(Bitmap b1, Bitmap b2) {
@@ -79,11 +83,8 @@ public class TextureOverlay extends BaseRenderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glEnable(GLES20.GL_TEXTURE_2D | GLES20.GL_DEPTH_TEST);
         GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        mGLPosition = allocateFloatBuffer(vertexCoords);
-        mTexture1Coord = allocateFloatBuffer(textureCoords1);
-        mOverlayCoord = allocateFloatBuffer(textureCoords2);
         //
-        mProgram = ShaderUtils.createProgram(mView.getResources(),
+        mProgram = Utils.createProgramFromAssets(mContext.getResources(),
                 vShaderFileName, fShaderFileName);
         //
         textureId0 = createTexture(mBitmap1);
@@ -118,7 +119,7 @@ public class TextureOverlay extends BaseRenderer {
         } else {
             if (sWH > sWidthHeight) {
                 Matrix.orthoM(mProjectMatrix, 0, -1, 1,
-                        -1 / sWidthHeight * sWH, 1 / sWidthHeight * sWH, 3, 5);
+                        -1 / sWidthHeight * sWH, 1 / sWidthHeight * sWH, 3, 10);
             } else {
                 Matrix.orthoM(mProjectMatrix, 0, -1, 1, -sWH / sWidthHeight,
                         sWH / sWidthHeight, 3, 5);

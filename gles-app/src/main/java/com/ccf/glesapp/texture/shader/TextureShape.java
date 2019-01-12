@@ -1,21 +1,23 @@
-package com.ccflying.glestexture;
+package com.ccf.glesapp.texture.shader;
 
 import java.nio.FloatBuffer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLUtils;
 import android.opengl.Matrix;
 
-import com.ccflying.glestexture.base.BaseRenderer;
-import com.ccflying.glestexture.util.ShaderUtils;
+import com.ccf.glesapp.util.Utils;
 
 // https://blog.csdn.net/junzia/article/details/52842816
-public class TextureShape extends BaseRenderer {
+public class TextureShape implements GLSurfaceView.Renderer {
+
+    public static final int COORDS_PER_VERTEX = 3;
 
     final String TAG = "TextureShape";
 
@@ -55,14 +57,22 @@ public class TextureShape extends BaseRenderer {
     protected int vertexPositionHandle;
     protected int vMatrixHandle;
 
-    public TextureShape(GLSurfaceView view) {
-        super(view);
+    protected Context mContext;
+
+    public TextureShape(Context context) {
+        this.mContext = context;
+        //
+        textureBuffer = Utils.allocateFloatBuffer(textureCoords);
+        vertexBuffer = Utils.allocateFloatBuffer(vertexCoords);
     }
 
-    public TextureShape(GLSurfaceView view, String vShader, String fShader) {
-        super(view);
+    public TextureShape(Context context, String vShader, String fShader) {
+        this.mContext = context;
         this.vShaderFileName = vShader;
         this.fShaderFileName = fShader;
+        //
+        textureBuffer = Utils.allocateFloatBuffer(textureCoords);
+        vertexBuffer = Utils.allocateFloatBuffer(vertexCoords);
     }
 
     public void setBitmap(Bitmap bmp) {
@@ -146,11 +156,8 @@ public class TextureShape extends BaseRenderer {
     public void onSurfaceCreated(GL10 arg0, EGLConfig arg1) {
         GLES20.glEnable(GLES20.GL_TEXTURE_2D | GLES20.GL_DEPTH_TEST);
         GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
-        textureBuffer = allocateFloatBuffer(textureCoords);
-        vertexBuffer = allocateFloatBuffer(vertexCoords);
         //
-        mProgram = ShaderUtils.createProgram(mView.getResources(),
-                vShaderFileName, fShaderFileName);
+        mProgram = Utils.createProgramFromAssets(mContext.getResources(), vShaderFileName, fShaderFileName);
 
         onProgramCreated(mProgram);
     }

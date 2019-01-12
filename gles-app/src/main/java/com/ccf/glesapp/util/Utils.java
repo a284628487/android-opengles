@@ -25,9 +25,14 @@ public class Utils {
                 result.append(new String(buffer, 0, ch));
             }
         } catch (Exception e) {
+            Log.e(TAG, "getAssetsResourceString: " + e);
             return null;
         }
         return result.toString().replaceAll("\\r\\n", "\n");
+    }
+
+    public static int loadShaderFromAssets(Resources res, int shaderType, String resName) {
+        return loadShader(shaderType, getAssetsResourceString(res, resName));
     }
 
     public static int createProgram(String vertex, String fragment) {
@@ -60,6 +65,12 @@ public class Utils {
             }
         }
         return program;
+    }
+
+    public static int createProgramFromAssets(Resources res, String vertexRes, String fragmentRes) {
+        return createProgram(
+                getAssetsResourceString(res, vertexRes),
+                getAssetsResourceString(res, fragmentRes));
     }
 
     public static int loadShader(int type, String shaderCode) {

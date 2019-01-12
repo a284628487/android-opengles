@@ -1,16 +1,17 @@
-package com.ccflying.glestexture;
+package com.ccf.glesapp.texture.shader;
 
+import android.content.Context;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
-import com.ccflying.glestexture.base.TextureFilter;
+import com.ccf.glesapp.texture.base.TextureFilter;
 
 import javax.microedition.khronos.opengles.GL10;
 
 public class TextureWithFilter extends TextureShape {
 
-    private TextureFilter mFilter = TextureFilter.NONE;
+    private TextureFilter mFilter = TextureFilter.WARM;
     private int changeTypeHandle;
     private int changeColorHandle;
     private int uXYHandle;
@@ -20,8 +21,8 @@ public class TextureWithFilter extends TextureShape {
         this.mFilter = f;
     }
 
-    public TextureWithFilter(GLSurfaceView view) {
-        super(view, "vshader/TextureWithFilter.shader", "fshader/TextureWithFilter.shader");
+    public TextureWithFilter(Context context) {
+        super(context, "vshader/TextureWithFilter.shader", "fshader/TextureWithFilter.shader");
     }
 
     @Override

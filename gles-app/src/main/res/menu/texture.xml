@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/texture"
+        android:title="Texture"></item>
+    <item
+        android:id="@+id/overlay_texture"
+        android:title="OverlayTexture"></item>
+    <item
+        android:id="@+id/black_white"
+        android:title="BlackWhite"></item>
+    <item
+        android:id="@+id/texture_filter"
+        android:title="TextureFilter"></item>
+</menu>

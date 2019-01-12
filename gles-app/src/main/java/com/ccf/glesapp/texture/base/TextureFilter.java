@@ -1,4 +1,4 @@
-package com.ccflying.glestexture.base;
+package com.ccf.glesapp.texture.base;
 
 public enum TextureFilter {
 

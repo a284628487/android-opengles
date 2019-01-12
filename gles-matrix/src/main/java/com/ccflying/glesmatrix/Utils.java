@@ -25,33 +25,4 @@ public class Utils {
         }
         return result.toString().replaceAll("\\r\\n", "\n");
     }
-
-    public static int loadShader(int type, String shaderCode) {
-        // 根据type创建顶点着色器或者片元着色器
-        int shader = GLES20.glCreateShader(type);
-        // 将资源加入到着色器中并编译
-        GLES20.glShaderSource(shader, shaderCode);
-        GLES20.glCompileShader(shader);
-        return shader;
-    }
-
-    public static FloatBuffer allocateFloatBuffer(float[] input) {
-        // float占4个字节，所以是length * 4，
-        ByteBuffer floatBB = ByteBuffer.allocateDirect(input.length * 4);
-        floatBB.order(ByteOrder.nativeOrder());
-        FloatBuffer floatBuffer = floatBB.asFloatBuffer();
-        floatBuffer.put(input);
-        floatBuffer.position(0);
-        return floatBuffer;
-    }
-
-    public static ShortBuffer allocateShortBuffer(short[] input) {
-        // short占2个字节，所以是length * 2，
-        ByteBuffer floatBB = ByteBuffer.allocateDirect(input.length * 2);
-        floatBB.order(ByteOrder.nativeOrder());
-        ShortBuffer shortBuffer = floatBB.asShortBuffer();
-        shortBuffer.put(input);
-        shortBuffer.position(0);
-        return shortBuffer;
-    }
 }

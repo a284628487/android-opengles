@@ -20,6 +20,7 @@
         </activity>
         <activity android:name=".polygon.PolygonActivity" />
         <activity android:name=".polygon.Polygon3DActivity" />
+        <activity android:name=".texture.TextureActivity" />
     </application>
 
 </manifest>
