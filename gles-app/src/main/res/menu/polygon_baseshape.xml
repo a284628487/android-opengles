@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/color"
+        android:title="Color"></item>
+    <item
+        android:id="@+id/triangle"
+        android:title="SingleColorTriangle"></item>
+    <item
+        android:id="@+id/multicolor"
+        android:title="MultiColorTriangle"></item>
+    <item
+        android:id="@+id/triangle_matrix"
+        android:title="TriangleMatrix"></item>
+    <item
+        android:id="@+id/circle"
+        android:title="Circle"></item>
+    <item
+        android:id="@+id/color_circle"
+        android:title="ColorFullCircle"></item>
+    <item
+        android:id="@+id/square"
+        android:title="Square"></item>
+</menu>

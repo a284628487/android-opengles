@@ -1,5 +1,6 @@
 package com.ccflying.glesvideo;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -7,9 +8,11 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,9 +54,11 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
         }
     };
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 100);
         setContentView(R.layout.activity_main);
         mGLSurfaceView = findViewById(R.id.texture);
         mGLSurfaceView.setEGLContextClientVersion(2);
@@ -74,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements GLSurfaceView.Ren
             e.printStackTrace();
         }
     }
-
 
     private void startPlay() {
         try {

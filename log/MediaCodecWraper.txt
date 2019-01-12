@@ -1,0 +1,88 @@
+07-27 20:12:28.466 E/MediaCodecWrapper: MediaCodecWrapper: 5 <-> 5
+07-27 20:12:28.468 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.468 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.468 E/MediaCodecWrapper: update#dequeueInputBuffer: 4
+07-27 20:12:28.489 E/MediaCodecWrapper: writeSample: 2 -> 31115
+07-27 20:12:28.502 E/MediaCodecWrapper: writeSample: 3 -> 1269
+07-27 20:12:28.519 E/MediaCodecWrapper: writeSample: 4 -> 333
+07-27 20:12:28.538 E/MediaCodecWrapper: update#dequeueOutputBuffer: -3
+07-27 20:12:28.539 E/MediaCodecWrapper: update#dequeueInputBuffer: 0
+07-27 20:12:28.539 E/MediaCodecWrapper: update#dequeueInputBuffer: 1
+07-27 20:12:28.539 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.554 E/MediaCodecWrapper: writeSample: 0 -> 91
+07-27 20:12:28.554 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.555 E/MediaCodecWrapper: update#dequeueInputBuffer: 4
+07-27 20:12:28.571 E/MediaCodecWrapper: writeSample: 1 -> 444
+07-27 20:12:28.572 E/MediaCodecWrapper: update#dequeueInputBuffer: 0
+07-27 20:12:28.573 E/MediaCodecWrapper: update#dequeueOutputBuffer: -2
+07-27 20:12:28.539 E/MediaCodecWrapper: update#dequeueOutputBuffer: 12
+07-27 20:12:28.539 E/MediaCodecWrapper: popSample: 12
+07-27 20:12:28.588 E/MediaCodecWrapper: writeSample: 2 -> 959
+07-27 20:12:28.589 E/MediaCodecWrapper: update#dequeueInputBuffer: 1
+07-27 20:12:28.591 E/MediaCodecWrapper: update#dequeueOutputBuffer: 11
+07-27 20:12:28.591 E/MediaCodecWrapper: popSample: 11
+07-27 20:12:28.606 E/MediaCodecWrapper: writeSample: 3 -> 778
+07-27 20:12:28.607 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.539 E/MediaCodecWrapper: update#dequeueOutputBuffer: 10
+07-27 20:12:28.609 E/MediaCodecWrapper: popSample: 10
+07-27 20:12:28.624 E/MediaCodecWrapper: writeSample: 4 -> 986
+07-27 20:12:28.625 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.626 E/MediaCodecWrapper: update#dequeueOutputBuffer: 9
+07-27 20:12:28.627 E/MediaCodecWrapper: popSample: 9
+07-27 20:12:28.644 E/MediaCodecWrapper: writeSample: 0 -> 829
+07-27 20:12:28.647 E/MediaCodecWrapper: update#dequeueInputBuffer: 4
+07-27 20:12:28.648 E/MediaCodecWrapper: update#dequeueOutputBuffer: 8
+07-27 20:12:28.658 E/MediaCodecWrapper: writeSample: 1 -> 1041
+07-27 20:12:28.659 E/MediaCodecWrapper: update#dequeueInputBuffer: 0
+07-27 20:12:28.659 E/MediaCodecWrapper: update#dequeueOutputBuffer: 7
+07-27 20:12:28.660 E/MediaCodecWrapper: popSample: 8
+07-27 20:12:28.675 E/MediaCodecWrapper: writeSample: 2 -> 1160
+07-27 20:12:28.676 E/MediaCodecWrapper: update#dequeueInputBuffer: 1
+07-27 20:12:28.676 E/MediaCodecWrapper: update#dequeueOutputBuffer: 6
+07-27 20:12:28.692 E/MediaCodecWrapper: writeSample: 3 -> 834
+07-27 20:12:28.693 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.694 E/MediaCodecWrapper: update#dequeueOutputBuffer: 5
+07-27 20:12:28.710 E/MediaCodecWrapper: writeSample: 4 -> 1377
+07-27 20:12:28.710 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.711 E/MediaCodecWrapper: update#dequeueOutputBuffer: 4
+07-27 20:12:28.539 E/MediaCodecWrapper: popSample: 7
+07-27 20:12:28.727 E/MediaCodecWrapper: writeSample: 0 -> 997
+07-27 20:12:28.727 E/MediaCodecWrapper: update#dequeueInputBuffer: 4
+07-27 20:12:28.728 E/MediaCodecWrapper: update#dequeueOutputBuffer: 3
+07-27 20:12:28.744 E/MediaCodecWrapper: writeSample: 1 -> 1362
+07-27 20:12:28.745 E/MediaCodecWrapper: update#dequeueInputBuffer: 0
+07-27 20:12:28.745 E/MediaCodecWrapper: update#dequeueOutputBuffer: 2
+07-27 20:12:28.746 E/MediaCodecWrapper: popSample: 6
+07-27 20:12:28.761 E/MediaCodecWrapper: writeSample: 2 -> 1336
+07-27 20:12:28.762 E/MediaCodecWrapper: update#dequeueInputBuffer: 1
+07-27 20:12:28.763 E/MediaCodecWrapper: update#dequeueOutputBuffer: 1
+07-27 20:12:28.779 E/MediaCodecWrapper: writeSample: 3 -> 1311
+07-27 20:12:28.779 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.780 E/MediaCodecWrapper: update#dequeueOutputBuffer: 12
+07-27 20:12:28.781 E/MediaCodecWrapper: popSample: 5
+07-27 20:12:28.796 E/MediaCodecWrapper: writeSample: 4 -> 1403
+07-27 20:12:28.797 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.797 E/MediaCodecWrapper: update#dequeueOutputBuffer: 0
+07-27 20:12:28.814 E/MediaCodecWrapper: writeSample: 0 -> 1537
+07-27 20:12:28.815 E/MediaCodecWrapper: update#dequeueInputBuffer: 4
+07-27 20:12:28.816 E/MediaCodecWrapper: update#dequeueOutputBuffer: 10
+07-27 20:12:28.831 E/MediaCodecWrapper: writeSample: 1 -> 1657
+07-27 20:12:28.833 E/MediaCodecWrapper: update#dequeueInputBuffer: 0
+07-27 20:12:28.834 E/MediaCodecWrapper: update#dequeueOutputBuffer: 11
+07-27 20:12:28.835 E/MediaCodecWrapper: popSample: 4
+07-27 20:12:28.848 E/MediaCodecWrapper: writeSample: 2 -> 1595
+07-27 20:12:28.849 E/MediaCodecWrapper: update#dequeueInputBuffer: 1
+07-27 20:12:28.851 E/MediaCodecWrapper: update#dequeueOutputBuffer: 9
+07-27 20:12:28.866 E/MediaCodecWrapper: writeSample: 3 -> 1622
+07-27 20:12:28.869 E/MediaCodecWrapper: popSample: 3
+07-27 20:12:28.883 E/MediaCodecWrapper: writeSample: 4 -> 1698
+07-27 20:12:28.884 E/MediaCodecWrapper: update#dequeueInputBuffer: 2
+07-27 20:12:28.885 E/MediaCodecWrapper: update#dequeueOutputBuffer: 8
+07-27 20:12:28.900 E/MediaCodecWrapper: writeSample: 0 -> 1732
+07-27 20:12:28.918 E/MediaCodecWrapper: writeSample: 1 -> 1740
+07-27 20:12:28.920 E/MediaCodecWrapper: popSample: 2
+07-27 20:12:28.935 E/MediaCodecWrapper: writeSample: 2 -> 1695
+07-27 20:12:28.936 E/MediaCodecWrapper: update#dequeueInputBuffer: 3
+07-27 20:12:28.937 E/MediaCodecWrapper: update#dequeueOutputBuffer: 7
+07-27 20:12:28.953 E/MediaCodecWrapper: writeSample: 3 -> 1672
+07-27 20:12:28.955 E/MediaCodecWrapper: popSample: 1

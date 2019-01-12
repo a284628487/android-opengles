@@ -12,11 +12,11 @@
 - Renders on a dedicated thread to decouple rendering performance from the UI thread.
     在特定的线程(内部有一个渲染线程**GLThread**)进行渲染，和UI thread解耦。
 - Supports both on-demand and continuous rendering.
-    支持条件渲染以及一直不停渲染两种模式。
+    支持条件渲染以及持续渲染两种模式。
 
 ## Start
 
-通常使用`GLSurfaceView`，都是继承自它并且根据需要重写它的方法，比如对用户的输入做特殊的处理。
+通常使用`GLSurfaceView`，通常都是继承自它并且根据需要重写它的方法，比如对用户的输入做特殊的处理。
 如果我们的应用不需要响应输入事件，则直接使用它。和普通的View不同的是，绘制(drawing)操作是在一个分离出来的叫`Renderer`的对象中进行，而不是`onDraw`。
 通常直接调用`setRenderer`就行了，但是，可以在`setRenderer()`之前通过一些方法修改`GLSurfaceView`的一些行为。
 
