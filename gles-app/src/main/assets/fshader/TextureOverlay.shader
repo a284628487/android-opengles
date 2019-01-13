@@ -1,8 +1,8 @@
 precision mediump float;
-
+// 纹理1
 uniform sampler2D vTexture;
 varying vec2 textureCoordinate;
-
+// 纹理2
 uniform sampler2D vTexture2;
 varying vec2 textureCoordinate2;
 
@@ -32,10 +32,10 @@ void main() {
         // 第三个参数为第二个参数在混合运算中所占的比重
         gl_FragColor = mix(base, overlay, 0.4);
     } else { // 矩形区域外的融合
-        vec4 overlay = texture2D(vTexture2, textureCoordinate2);
-        float ra = (base.r + overlay.r) / 2.0;
-        float ga = (base.g + overlay.g) / 2.0;
-        float ba = (base.b + overlay.b) / 2.0;
+        // vec4 overlay = texture2D(vTexture2, textureCoordinate2);
+        // float ra = (base.r + overlay.r) / 2.0;
+        // float ga = (base.g + overlay.g) / 2.0;
+        // float ba = (base.b + overlay.b) / 2.0;
         // gl_FragColor = mix(overlay, base, 1.0);
         gl_FragColor = base;
     }

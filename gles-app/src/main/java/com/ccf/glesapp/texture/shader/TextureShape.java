@@ -61,16 +61,17 @@ public class TextureShape implements GLSurfaceView.Renderer {
 
     public TextureShape(Context context) {
         this.mContext = context;
-        //
-        textureBuffer = Utils.allocateFloatBuffer(textureCoords);
-        vertexBuffer = Utils.allocateFloatBuffer(vertexCoords);
+        init();
     }
 
     public TextureShape(Context context, String vShader, String fShader) {
         this.mContext = context;
         this.vShaderFileName = vShader;
         this.fShaderFileName = fShader;
-        //
+        init();
+    }
+
+    private void init() {
         textureBuffer = Utils.allocateFloatBuffer(textureCoords);
         vertexBuffer = Utils.allocateFloatBuffer(vertexCoords);
     }
@@ -95,14 +96,15 @@ public class TextureShape implements GLSurfaceView.Renderer {
         GLES20.glUniformMatrix4fv(vMatrixHandle, 1, false, mMVPMatrix, 0);
         GLES20.glEnableVertexAttribArray(vertexPositionHandle);
         GLES20.glEnableVertexAttribArray(texturePositionHandle);
+        // 使用纹理
         GLES20.glUniform1i(textureHandle, 0);
-        textureId = createTexture();
         // 传入顶点坐标
         GLES20.glVertexAttribPointer(vertexPositionHandle, 2, GLES20.GL_FLOAT,
                 false, 0, vertexBuffer);
         // 传入纹理坐标
         GLES20.glVertexAttribPointer(texturePositionHandle, 2, GLES20.GL_FLOAT,
                 false, 0, textureBuffer);
+        // 绘制
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
         //
         GLES20.glDisableVertexAttribArray(vertexPositionHandle);
@@ -121,9 +123,8 @@ public class TextureShape implements GLSurfaceView.Renderer {
         //
         float sWH = w / (float) h;
         float sWidthHeight = width / (float) height;
-        // uXY = sWidthHeight;
         // Matrix.orthoM(m, mOffset, left, right, bottom, top, near, far);
-        // 长的一方保持为坐标刻度值1 ??? -> No
+        // 值小的一边保持值为1
 
         // 屏幕宽大于屏幕高
         if (width > height) { // -> sWidthHeight 大于 1
@@ -158,34 +159,10 @@ public class TextureShape implements GLSurfaceView.Renderer {
         GLES20.glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
         //
         mProgram = Utils.createProgramFromAssets(mContext.getResources(), vShaderFileName, fShaderFileName);
-
         onProgramCreated(mProgram);
-    }
 
-    protected int createTexture() {
-        int[] texture = new int[1];
-        if (mBitmap != null && !mBitmap.isRecycled()) {
-            // 生成纹理(GLsizei n, textures, offset)
-            GLES20.glGenTextures(1, texture, 0);
-            // 生成纹理(target, texture)
-            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texture[0]);
-            // 设置缩小过滤为使用纹理中坐标最接近的一个像素的颜色作为需要绘制的像素颜色
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST);
-            // 设置放大过滤为使用纹理中坐标最接近的若干个颜色，通过加权平均算法得到需要绘制的像素颜色
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR);
-            // 设置环绕方向S，截取纹理坐标到[1/2n, 1-1/2n]。将导致永远不会与border融合
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE);
-            // 设置环绕方向T，截取纹理坐标到[1/2n, 1-1/2n]。将导致永远不会与border融合
-            GLES20.glTexParameterf(GLES20.GL_TEXTURE_2D,
-                    GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
-            // 根据以上指定的参数，生成一个2D纹理
-            GLUtils.texImage2D(GLES20.GL_TEXTURE_2D, 0, mBitmap, 0);
-            return texture[0];
-        }
-        return 0;
+        // 创建textureId
+        textureId = Utils.createTexture(mBitmap);
     }
 
     protected void onProgramDrawFrame() {

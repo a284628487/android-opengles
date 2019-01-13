@@ -28,4 +28,31 @@
         android:onClick="onClick"
         android:text="Texture" />
 
+    <Button
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Camera" />
+
+    <Button
+        android:id="@+id/camera2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Camera2" />
+
+    <Button
+        android:id="@+id/video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="Video" />
+
+    <Button
+        android:id="@+id/media_effect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick"
+        android:text="MediaEffect" />
 </LinearLayout>

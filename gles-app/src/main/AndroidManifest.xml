@@ -2,7 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ccf.glesapp">
 
-    <uses-feature android:glEsVersion="0x00020000"/>
+    <uses-feature android:glEsVersion="0x00020000" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -21,6 +25,14 @@
         <activity android:name=".polygon.PolygonActivity" />
         <activity android:name=".polygon.Polygon3DActivity" />
         <activity android:name=".texture.TextureActivity" />
+        <activity android:name=".camera.CameraEntryActivity" />
+        <activity android:name=".camera.CameraActivity" />
+        <activity android:name=".camera.CameraL9Activity" />
+        <activity android:name=".camera.CameraSVActivity" />
+        <activity android:name=".camera.CameraTexActivity" />
+        <activity android:name=".camera2.Camera2Activity" />
+        <activity android:name=".mediaeffect.MediaEffectActivity" />
+        <activity android:name=".video.VideoActivity" />
     </application>
 
 </manifest>

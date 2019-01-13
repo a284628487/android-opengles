@@ -70,7 +70,7 @@ public class TextureActivity extends AppCompatActivity {
     protected void setTextureFilterRenderer() {
         createSurfaceView();
         TextureWithFilter mRenderer = new TextureWithFilter(this);
-        mRenderer.setFilter(TextureFilter.WARM);
+        mRenderer.setFilter(TextureFilter.MAGN);
         mRenderer.setBitmap(loadBitmap());
         mSurfaceView.setRenderer(mRenderer);
         setView();

@@ -1,8 +1,8 @@
 precision mediump float;
 
 uniform sampler2D vTexture;
-uniform int vChangeType;
-uniform vec3 vChangeColor; // 滤镜处理颜色
+uniform int vChangeType; // type
+uniform vec3 vChangeColor; // 滤镜处理颜色值
 uniform float uXY;
 
 varying vec4 gPosition;
@@ -39,7 +39,7 @@ void main() {
       nColor+=texture2D(vTexture,vec2(aCoordinate.x+vChangeColor.b, aCoordinate.y+vChangeColor.b));
       nColor/=13.0;
       gl_FragColor = nColor;
-	}else if(vChangeType==4){
+	}else if(vChangeType==4){ // 放大
         float dis=distance(vec2(gPosition.x, gPosition.y/uXY), vec2(vChangeColor.r, vChangeColor.g));
         if(dis<vChangeColor.b){
             nColor=texture2D(vTexture, vec2(aCoordinate.x/2.0+0.25, aCoordinate.y/2.0+0.25));
