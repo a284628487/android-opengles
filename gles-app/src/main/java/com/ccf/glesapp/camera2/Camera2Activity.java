@@ -19,8 +19,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 
-import com.ccf.glesapp.camera2.filter.CameraFilter;
-import com.ccf.glesapp.camera2.filter.LightFilter;
+import com.ccf.glesapp.stream.camerafilter.LightFilter;
+import com.ccf.glesapp.stream.StreamFilter;
+import com.ccf.glesapp.util.Gl2Utils;
 
 import java.util.Arrays;
 
@@ -43,7 +44,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
 
     private CameraDevice cameraDevice;
 
-    private CameraFilter mFilter;
+    private StreamFilter mFilter;
 
     private CameraDevice.StateCallback cameraOpenCallback = new CameraDevice.StateCallback() {
         @Override

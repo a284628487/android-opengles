@@ -14,9 +14,9 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
-import com.ccf.glesapp.camera.filter.CameraFilter;
-import com.ccf.glesapp.camera.filter.NoFilter;
-import com.ccf.glesapp.camera.util.Gl2Utils;
+import com.ccf.glesapp.stream.camerafilter.NoFilter;
+import com.ccf.glesapp.stream.StreamFilter;
+import com.ccf.glesapp.util.Gl2Utils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -32,7 +32,7 @@ public class CameraRender implements GLSurfaceView.Renderer {
     private SurfaceTexture surfaceTexture;
     private int width, height;
     private int dataWidth, dataHeight;
-    private CameraFilter mFilter;
+    private StreamFilter mFilter;
 
     // private int cameraId = 0;
 

@@ -10,6 +10,8 @@ import android.view.View;
 
 import com.ccf.glesapp.camera.CameraEntryActivity;
 import com.ccf.glesapp.camera2.Camera2Activity;
+import com.ccf.glesapp.egl.v1.EGLv1Activity;
+import com.ccf.glesapp.matrix.MatrixActivity;
 import com.ccf.glesapp.mediaeffect.MediaEffectActivity;
 import com.ccf.glesapp.polygon.Polygon3DActivity;
 import com.ccf.glesapp.polygon.PolygonActivity;
@@ -52,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.media_effect:
                 startActivity(new Intent(this, MediaEffectActivity.class));
+                break;
+            case R.id.matrix:
+                startActivity(new Intent(this, MatrixActivity.class));
+                break;
+            case R.id.egl:
+                startActivity(new Intent(this, EGLv1Activity.class));
                 break;
         }
     }

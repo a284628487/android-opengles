@@ -18,10 +18,10 @@ import android.util.Log;
 import android.view.View;
 
 import com.ccf.glesapp.R;
-import com.ccf.glesapp.camera.filter.CameraFilter;
-import com.ccf.glesapp.camera.filter.GrayFilter;
-import com.ccf.glesapp.camera.filter.TouchFilter;
-import com.ccf.glesapp.camera.util.Gl2Utils;
+import com.ccf.glesapp.stream.camerafilter.GrayFilter;
+import com.ccf.glesapp.stream.camerafilter.TouchFilter;
+import com.ccf.glesapp.stream.StreamFilter;
+import com.ccf.glesapp.util.Gl2Utils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -41,7 +41,7 @@ public class CameraActivity extends Activity implements Renderer {
     private MyGLSurfaceView mSurfaceView;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
-    private CameraFilter mFilter;
+    private StreamFilter mFilter;
 
     private int textureId = 0;
     private int cameraId = 0;

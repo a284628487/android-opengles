@@ -1,6 +1,5 @@
 package com.ccf.glesapp.video;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
@@ -16,10 +15,9 @@ import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Surface;
 
-import com.ccf.glesapp.R;
-import com.ccf.glesapp.video.filter.CameraFilter;
-import com.ccf.glesapp.video.filter.GrayFilter;
-import com.ccf.glesapp.video.util.Gl2Utils;
+import com.ccf.glesapp.stream.StreamFilter;
+import com.ccf.glesapp.util.Gl2Utils;
+import com.ccf.glesapp.stream.videofilter.GrayFilter;
 
 import java.io.IOException;
 
@@ -35,7 +33,7 @@ public class VideoActivity extends AppCompatActivity implements GLSurfaceView.Re
     //
     private int textureId;
     //
-    private CameraFilter mFilter;
+    private StreamFilter mFilter;
 
     private boolean stoped = false;
     //
@@ -69,7 +67,7 @@ public class VideoActivity extends AppCompatActivity implements GLSurfaceView.Re
                 return false;
             }
         });
-        mFilter = new GrayFilter(getResources(), true);
+        mFilter = new GrayFilter(getResources());
         try {
             mPlayer.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath() + "/video.mp4");
         } catch (IOException e) {

@@ -154,10 +154,12 @@ public class TextureOverlay implements GLSurfaceView.Renderer {
         // 绑定纹理1
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId0);
+        // 设置纹理句柄1
         GLES20.glUniform1i(mTextureHandle, 0);
         // 绑定纹理2
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureId1);
+        // 设置纹理句柄2
         GLES20.glUniform1i(mTexture2Handle, 1);
         //
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
@@ -168,5 +170,3 @@ public class TextureOverlay implements GLSurfaceView.Renderer {
     }
 }
 
-// https://blog.csdn.net/keen_zuxwang/article/details/78362058?locationNum=3&fps=1
-// https://blog.csdn.net/prahs/article/details/49818345

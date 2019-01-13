@@ -1,1 +1,1 @@
-include ':app', ':base', ':gles-matrix', ':gles-egl', ':gles-app'
+include ':app', ':gles-app'

@@ -33,6 +33,8 @@
         <activity android:name=".camera2.Camera2Activity" />
         <activity android:name=".mediaeffect.MediaEffectActivity" />
         <activity android:name=".video.VideoActivity" />
+        <activity android:name=".matrix.MatrixActivity" />
+        <activity android:name=".egl.v1.EGLv1Activity" />
     </application>
 
 </manifest>

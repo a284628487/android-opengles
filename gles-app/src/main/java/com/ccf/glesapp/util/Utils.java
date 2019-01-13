@@ -6,6 +6,10 @@ import android.opengl.GLES20;
 import android.opengl.GLUtils;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -148,4 +152,41 @@ public class Utils {
         return 0;
     }
 
+
+    public static void saveBitmapFromByteBuffer(final ByteBuffer data,
+                                                final int bmpWidth,
+                                                final int bmpHeight,
+                                                final String imgPath) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bitmap = Bitmap.createBitmap(bmpWidth, bmpHeight, Bitmap.Config.ARGB_8888);
+                bitmap.copyPixelsFromBuffer(data);
+                saveBitmap(bitmap, imgPath);
+                data.clear();
+            }
+        }).start();
+    }
+
+    // 保存图片
+    public static boolean saveBitmap(final Bitmap b, final String mImgPath) {
+        String path = mImgPath.substring(0, mImgPath.lastIndexOf("/") + 1);
+        File folder = new File(path);
+        if (!folder.exists() && !folder.mkdirs()) {
+            return false;
+        }
+        long dataTake = System.currentTimeMillis();
+        final String jpegName = path + dataTake + ".jpg";
+        try {
+            FileOutputStream fout = new FileOutputStream(jpegName);
+            BufferedOutputStream bos = new BufferedOutputStream(fout);
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
 }
