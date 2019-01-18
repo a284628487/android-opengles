@@ -238,4 +238,9 @@ public abstract class StreamFilter {
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, getTextureId());
         GLES20.glUniform1i(mHTexture, textureType);
     }
+
+    public void switchCamera() {
+        isBackCamera = !isBackCamera;
+        initBuffer();
+    }
 }

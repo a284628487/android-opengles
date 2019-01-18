@@ -1,6 +1,7 @@
 package com.ccf.glesapp.camera2;
 
 import android.annotation.SuppressLint;
+import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -9,6 +10,7 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.StreamConfigurationMap;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -17,10 +19,17 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.util.Size;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Surface;
 
+import com.ccf.glesapp.R;
+import com.ccf.glesapp.stream.camerafilter.GrayFilter;
 import com.ccf.glesapp.stream.camerafilter.LightFilter;
 import com.ccf.glesapp.stream.StreamFilter;
+import com.ccf.glesapp.stream.camerafilter.NoFilter;
 import com.ccf.glesapp.util.Gl2Utils;
 
 import java.util.Arrays;
@@ -32,7 +41,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
 
     final String TAG = "Camera2Activity";
 
-    private GLSurfaceView mGLSurfaceView;
+    private MyGLSurfaceView mGLSurfaceView;
 
     private SurfaceTexture mSurfaceTexture;
 
@@ -45,6 +54,22 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
     private CameraDevice cameraDevice;
 
     private StreamFilter mFilter;
+
+    private Size mPreviewSize;
+
+    private int surfaceWidth = 0;
+    private int surfaceHeight = 0;
+
+    private final int PREFERED_WIDTH = 1280;
+    private final int PREFERED_HEIGHT = 720;
+
+    private boolean mIsBackCamera = true;
+
+    private int textureId = 0;
+
+    private boolean mNeedChangeFilter = false;
+    private boolean mNeedChangeCamera = false;
+    private Runnable mChangeFilterRunnable = null;
 
     private CameraDevice.StateCallback cameraOpenCallback = new CameraDevice.StateCallback() {
         @Override
@@ -90,11 +115,10 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         mBackTherad.start();
         mCameraHandler = new Handler(mBackTherad.getLooper());
 
-        mFilter = new LightFilter(getResources(), true);
+        mFilter = new LightFilter(getResources(), mIsBackCamera);
 
         cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
     }
-
 
     @Override
     protected void onResume() {
@@ -107,10 +131,16 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         super.onPause();
         mGLSurfaceView.onPause();
         //
-        if (null != captureSession)
+        releasePreview();
+    }
+
+    private void releasePreview() {
+        if (null != captureSession) {
             captureSession.close();
-        if (null != cameraDevice)
+        }
+        if (null != cameraDevice) {
             cameraDevice.close();
+        }
     }
 
     @Override
@@ -152,57 +182,141 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         }
     }
 
-    @SuppressLint("MissingPermission")
-    private void openCamera() {
+    private Size choosePreviewSize() {
         //
+        Size previewSize = null;
         try {
             String[] cids = cameraManager.getCameraIdList();
             for (String cid : cids) {
                 CameraCharacteristics stics = cameraManager.getCameraCharacteristics(cid);
                 Integer facing = stics.get(CameraCharacteristics.LENS_FACING);
-                if (null != facing && facing == CameraCharacteristics.LENS_FACING_FRONT)
+                int excludeCameraId = (mIsBackCamera ? CameraCharacteristics.LENS_FACING_FRONT : CameraCharacteristics.LENS_FACING_BACK);
+                if (null != facing && facing == excludeCameraId)
                     continue;
                 cameraId = cid;
+                // 获得流配置
+                StreamConfigurationMap map = stics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                if (map == null) {
+                    continue;
+                }
+                // 获取摄像头支持的所有尺寸
+                Size[] sizes = map.getOutputSizes(ImageFormat.JPEG);
+                for (int i = 0; i < sizes.length; i++) {
+                    Log.d(TAG, "choosePreviewSize: " + sizes[i].getWidth() + ", " + sizes[i].getHeight());
+                    if (sizes[i].getWidth() == PREFERED_WIDTH && sizes[i].getHeight() == PREFERED_HEIGHT) {
+                        previewSize = sizes[i];
+                        break;
+                    }
+                }
             }
-            //
-            updatePreviewSize();
+            if (null == previewSize) {
+                previewSize = new Size(PREFERED_WIDTH, PREFERED_HEIGHT);
+            }
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+        return previewSize;
+    }
+
+    @SuppressLint("MissingPermission")
+    private void openCamera() {
+        try {
             cameraManager.openCamera(cameraId, cameraOpenCallback, mCameraHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
 
-    private void updatePreviewSize() {
+    private void updatePreviewSize(final int previewWidth, final int previewHeight) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                ((MyGLSurfaceView) mGLSurfaceView).setWidthHeight(720, 1280);
+                mGLSurfaceView.setWidthHeight(previewWidth, previewHeight);
             }
         });
     }
 
+    private void switchCamera() {
+        Log.e(TAG, "switchCamera: thread = " + Thread.currentThread().getName());
+        // releasePreview
+        releasePreview();
+        mIsBackCamera = !mIsBackCamera;
+        // 获取previewSize
+        mPreviewSize = choosePreviewSize();
+        // 打开Camera
+        openCamera();
+        //
+        mNeedChangeCamera = true;
+    }
+
+    private void changeGrayFilter() {
+        mNeedChangeFilter = true;
+        mChangeFilterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFilter = new GrayFilter(getResources(), mIsBackCamera);
+                mFilter.setTextureId(textureId);
+                mFilter.onSurfaceCreated();
+            }
+        };
+    }
+
+    private void changeNoFilter() {
+        mNeedChangeFilter = true;
+        mChangeFilterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFilter = new NoFilter(getResources(), mIsBackCamera);
+                mFilter.setTextureId(textureId);
+                mFilter.onSurfaceCreated();
+            }
+        };
+    }
+
+    private void changeLightFilter() {
+        mNeedChangeFilter = true;
+        mChangeFilterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFilter = new LightFilter(getResources(), mIsBackCamera);
+                mFilter.setTextureId(textureId);
+                mFilter.onSurfaceCreated();
+            }
+        };
+    }
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        int textureId = createTextureID();
+        Log.e(TAG, "onSurfaceCreated: thread = " + Thread.currentThread().getName());
+        // 获取previewSize
+        mPreviewSize = choosePreviewSize();
+        // 摄像机直接获取到的数据是旋转90度的，所以需要对调宽高。
+        updatePreviewSize(mPreviewSize.getHeight(), mPreviewSize.getWidth());
+        // 创建Texture
+        textureId = createTextureID();
         mSurfaceTexture = new SurfaceTexture(textureId);
-        mSurfaceTexture.setDefaultBufferSize(720, 1280);
+        mSurfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         mSurface = new Surface(mSurfaceTexture);
-        openCamera();
         // TODO
         mFilter.setTextureId(textureId);
         mFilter.onSurfaceCreated();
+        // 打开Camera
+        openCamera();
     }
 
     @Override
     public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.e(TAG, "onSurfaceChanged: thread = " + Thread.currentThread().getName());
+        surfaceWidth = width;
+        surfaceHeight = height;
+        //
         GLES20.glViewport(0, 0, width, height);
         float[] matrix = new float[16];
         // preview size
-        int w = 720;
-        int h = 1280;
+        int imageWidth = mPreviewSize.getHeight();
+        int imageHeight = mPreviewSize.getWidth();
         //
-        Gl2Utils.getShowMatrix(matrix, w, h, width, height);
+        Gl2Utils.getShowMatrix(matrix, imageWidth, imageHeight, width, height);
         mFilter.setMatrix(matrix);
     }
 
@@ -213,6 +327,17 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         }
         // TODO - Filter
         mFilter.onDrawFrame();
+        //
+        if (mNeedChangeFilter) {
+            if (null != mChangeFilterRunnable) {
+                mChangeFilterRunnable.run();
+                mNeedChangeFilter = false;
+            }
+        } else if (mNeedChangeCamera) {
+            // 改变摄像头
+            mFilter.switchCamera();
+            mNeedChangeCamera = false;
+        }
     }
 
     private int createTextureID() {
@@ -238,5 +363,30 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         //
         // 由于我们创建的是扩展纹理，所以绑定的时候我们也需要绑定到扩展纹理上才可以正常使用，
         // GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,texture[0])。
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.camera2_menus, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.switchCamera:
+                switchCamera();
+                break;
+            case R.id.lightFilter:
+                changeLightFilter();
+                break;
+            case R.id.grayFilter:
+                changeGrayFilter();
+                break;
+            case R.id.noFilter:
+                changeNoFilter();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

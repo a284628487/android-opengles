@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/switchCamera"
+        android:title="SwitchCamere"></item>
+
+    <item
+        android:id="@+id/lightFilter"
+        android:title="LightFilter"></item>
+
+    <item
+        android:id="@+id/grayFilter"
+        android:title="GrayFilter"></item>
+
+    <item
+        android:id="@+id/noFilter"
+        android:title="NoFilter"></item>
+</menu>
