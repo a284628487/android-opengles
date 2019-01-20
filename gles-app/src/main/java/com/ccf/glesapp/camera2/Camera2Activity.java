@@ -8,9 +8,12 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.ImageWriter;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -176,6 +179,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         try {
             builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             builder.addTarget(mSurface);
+            cameraDevice.createReprocessableCaptureSession(null, null, captureSessionCallback, mCameraHandler);
             cameraDevice.createCaptureSession(Arrays.asList(mSurface), captureSessionCallback, mCameraHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -194,6 +198,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
                 if (null != facing && facing == excludeCameraId)
                     continue;
                 cameraId = cid;
+                stics.get(CameraCharacteristics.CONTROL_AVAILABLE_EFFECTS);
                 // 获得流配置
                 StreamConfigurationMap map = stics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
                 if (map == null) {
