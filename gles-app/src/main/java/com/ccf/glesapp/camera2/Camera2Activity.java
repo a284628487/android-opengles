@@ -29,11 +29,14 @@ import android.view.MenuItem;
 import android.view.Surface;
 
 import com.ccf.glesapp.R;
+import com.ccf.glesapp.stream.camerafilter.CenterFlashFilter;
+import com.ccf.glesapp.stream.camerafilter.FlashFilter;
 import com.ccf.glesapp.stream.camerafilter.GrayFilter;
 import com.ccf.glesapp.stream.camerafilter.LightFilter;
 import com.ccf.glesapp.stream.StreamFilter;
 import com.ccf.glesapp.stream.camerafilter.NoFilter;
 import com.ccf.glesapp.util.Gl2Utils;
+import com.ccf.glesapp.util.Utils;
 
 import java.util.Arrays;
 
@@ -179,7 +182,6 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         try {
             builder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             builder.addTarget(mSurface);
-            cameraDevice.createReprocessableCaptureSession(null, null, captureSessionCallback, mCameraHandler);
             cameraDevice.createCaptureSession(Arrays.asList(mSurface), captureSessionCallback, mCameraHandler);
         } catch (CameraAccessException e) {
             e.printStackTrace();
@@ -298,7 +300,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         // 摄像机直接获取到的数据是旋转90度的，所以需要对调宽高。
         updatePreviewSize(mPreviewSize.getHeight(), mPreviewSize.getWidth());
         // 创建Texture
-        textureId = createTextureID();
+        textureId = Utils.createStreamTexture();
         mSurfaceTexture = new SurfaceTexture(textureId);
         mSurfaceTexture.setDefaultBufferSize(mPreviewSize.getWidth(), mPreviewSize.getHeight());
         mSurface = new Surface(mSurfaceTexture);
@@ -323,6 +325,7 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
         //
         Gl2Utils.getShowMatrix(matrix, imageWidth, imageHeight, width, height);
         mFilter.setMatrix(matrix);
+        mFilter.onSizeChanged(width, height);
     }
 
     @Override
@@ -343,31 +346,6 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
             mFilter.switchCamera();
             mNeedChangeCamera = false;
         }
-    }
-
-    private int createTextureID() {
-        int[] texture = new int[1];
-        // 生成纹理
-        GLES20.glGenTextures(1, texture, 0);
-        // 绑定纹理
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
-        //
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        //
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-        //
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-        //
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-        //
-        return texture[0];
-        //
-        // 由于我们创建的是扩展纹理，所以绑定的时候我们也需要绑定到扩展纹理上才可以正常使用，
-        // GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,texture[0])。
     }
 
     @Override
@@ -391,7 +369,38 @@ public class Camera2Activity extends AppCompatActivity implements GLSurfaceView.
             case R.id.noFilter:
                 changeNoFilter();
                 break;
+            case R.id.flashFilter:
+                changeFlashFilter();
+                break;
+            case R.id.flashAtFilter:
+                changeFlashCenterFilter();
+                break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void changeFlashFilter() {
+        mNeedChangeFilter = true;
+        mChangeFilterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFilter = new FlashFilter(getResources(), mIsBackCamera);
+                mFilter.setTextureId(textureId);
+                mFilter.onSurfaceCreated();
+            }
+        };
+    }
+
+
+    private void changeFlashCenterFilter() {
+        mNeedChangeFilter = true;
+        mChangeFilterRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mFilter = new CenterFlashFilter(getResources(), mIsBackCamera);
+                mFilter.setTextureId(textureId);
+                mFilter.onSurfaceCreated();
+            }
+        };
     }
 }

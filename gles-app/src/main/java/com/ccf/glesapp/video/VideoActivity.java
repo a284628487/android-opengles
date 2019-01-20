@@ -1,9 +1,7 @@
 package com.ccf.glesapp.video;
 
-import android.annotation.SuppressLint;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Build;
@@ -18,6 +16,7 @@ import android.view.Surface;
 import com.ccf.glesapp.stream.StreamFilter;
 import com.ccf.glesapp.util.Gl2Utils;
 import com.ccf.glesapp.stream.videofilter.GrayFilter;
+import com.ccf.glesapp.util.Utils;
 
 import java.io.IOException;
 
@@ -100,7 +99,7 @@ public class VideoActivity extends AppCompatActivity implements GLSurfaceView.Re
 
     @Override
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-        textureId = createTextureID();
+        textureId = Utils.createStreamTexture();
         mSurfaceTexture = new SurfaceTexture(textureId);
         startPlay();
         // TODO
@@ -137,29 +136,4 @@ public class VideoActivity extends AppCompatActivity implements GLSurfaceView.Re
         mFilter.onDrawFrame();
     }
 
-    @SuppressLint("InlinedApi")
-    private int createTextureID() {
-        int[] texture = new int[1];
-        // 生成纹理
-        GLES20.glGenTextures(1, texture, 0);
-        // 绑定纹理
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture[0]);
-        //
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_LINEAR);
-        //
-        GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
-        //
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_S, GL10.GL_CLAMP_TO_EDGE);
-        //
-        GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
-                GL10.GL_TEXTURE_WRAP_T, GL10.GL_CLAMP_TO_EDGE);
-        //
-        return texture[0];
-        //
-        // 由于我们创建的是扩展纹理，所以绑定的时候我们也需要绑定到扩展纹理上才可以正常使用，
-        // GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES,texture[0])。
-    }
 }
