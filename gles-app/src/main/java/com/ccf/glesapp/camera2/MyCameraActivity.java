@@ -75,7 +75,7 @@ public class MyCameraActivity extends AppCompatActivity implements TextureView.S
             mCameraDevice = camera;
             try {
                 // 创建用于预览和拍照的CameraCaptureSession
-                mCameraDevice.createCaptureSession(Arrays.asList(mSurface, mImageReader.getSurface()), sessionCallback, mCameraHandler);
+                mCameraDevice.createCaptureSession(Arrays.asList(mSurface), sessionCallback, mCameraHandler);
             } catch (CameraAccessException e) {
                 e.printStackTrace();
             }
@@ -342,7 +342,7 @@ public class MyCameraActivity extends AppCompatActivity implements TextureView.S
 
             // 设置自动对焦模式
             captureRequestBuilder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-            //设置自动曝光模式
+            // 设置自动曝光模式
             captureRequestBuilder.set(CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
             //获得屏幕方向
