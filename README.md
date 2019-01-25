@@ -5,6 +5,9 @@
 
 - [GLSurfaceView](https://github.com/a284628487/android-opengles/blob/master/_docs/glsurfaceview.md)
 - [SurfaceTexture](https://github.com/a284628487/android-opengles/blob/master/_docs/surfacetexture.md)
+- [Texture](https://github.com/a284628487/android-opengles/blob/master/_docs/gles-texture.md)
+
+- [Camera2](https://github.com/a284628487/android-opengles/blob/master/_docs/camera2.md)
 
 ## App
 

@@ -1,3 +1,30 @@
+
+**OpenGL**是个专业的3D程序接口，是一个功能强大底层3D图形库，利用了图形加速硬件所以非常高效。
+OpenGL的英文全称是“Open Graphics Library”，顾名思义，OpenGL便是“开放的图形程序接口”。
+用于渲染2D、3D矢量图形的跨语言、跨平台的应用程序编程接口（API）。
+
+OpenGL ES 1.x 针对固定管线硬件的，OpenGL ES 2.x 针对可编程管线硬件。
+
+**GPU**的软件对外接口主要是**EGL**和**GLES**：
+
+**EGL**
+
+一般图形系统像framebuffer、HIGO、directfb、QT、Android都有自己window、surface等概念，对应的GPU中也有自己的eglWindow、eglSurface。
+但是GPU无法直接操作其它平台上的window、surface，所以必须要有EGL作为媒介提供接口，
+如将framebuffer提供的window、surface封装成GPU可以识别的eglWindow、eglSurface。
+
+**OpenGL ES**
+
+就是我们熟悉的openles 1.1 和 2.0 接口了，主要负责绘制图形。
+
+OpenGL ES 3.0主要新功能有：
+1、渲染管线多重增强，实现先进视觉效果的加速，包括遮挡查询(Occlusion Query)、变缓反馈(Transform Feedback)、实例渲染(Instanced Rendering)、四个或更多渲染目标支持。
+2、高质量ETC2/EAC纹理压缩格式成为一项标准功能，不同平台上不再需要需要不同的纹理集。
+3、新版GLSL ES 3.0着色语言，全面支持整数和32位浮点操作。
+4、纹理功能大幅增强，支持浮点纹理、3D纹理、深度纹理、顶点纹理、NPOT纹理、R/RG单双通道纹理、不可变纹理、2D阵列纹理、无二次幂限制纹理、阴影对比、调配(swizzle)、LOD与mip level clamps、无缝立方体贴图、采样对象、纹理MSAA抗锯齿渲染器。
+5、一系列广泛的精确尺寸纹理和渲染缓冲格式，便携移动应用更简单。
+
+
 GPU绘制图形步骤：先确定图形的顶点，连接线条，再对图形的表面添加纹理或者着色处理。GPU 内部有两个功能处理单元GP（Geometry Processor几何处理单元）、PP（Pixel Processor像素处理单元）分别负责这两步操作。
 
 GPU的对外接口主要是EGL和GLES：

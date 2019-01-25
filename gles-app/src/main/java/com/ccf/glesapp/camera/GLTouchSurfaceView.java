@@ -5,18 +5,18 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
-// com.ccf.glesapp.camera.MyGLSurfaceView
-public class MyGLSurfaceView extends GLSurfaceView {
+// com.ccf.glesapp.camera.GLTouchSurfaceView
+public class GLTouchSurfaceView extends GLSurfaceView {
 
     private float touchX, touchY;
 
-    final String TAG = "MyGLSurfaceView";
+    final String TAG = "GLTouchSurfaceView";
 
-    public MyGLSurfaceView(Context context) {
+    public GLTouchSurfaceView(Context context) {
         super(context);
     }
 
-    public MyGLSurfaceView(Context context, AttributeSet attrs) {
+    public GLTouchSurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, MatrixActivity.class));
                 break;
             case R.id.egl:
-                startActivity(new Intent(this, EGLv1Activity.class));
+                // startActivity(new Intent(this, EGLv1Activity.class));
                 break;
         }
     }

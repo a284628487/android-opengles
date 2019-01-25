@@ -9,10 +9,23 @@ import com.ccf.glesapp.camera.l9.CameraView;
 @SuppressLint("NewApi")
 public class CameraL9Activity extends Activity {
 
+    private CameraView cameraView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CameraView cameraView = new CameraView(this);
+        cameraView = new CameraView(this);
         setContentView(cameraView);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        cameraView.onPause();
     }
 }

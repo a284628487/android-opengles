@@ -8,7 +8,6 @@ import android.graphics.SurfaceTexture;
 import android.graphics.SurfaceTexture.OnFrameAvailableListener;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
-import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLSurfaceView.Renderer;
@@ -39,7 +38,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class CameraActivity extends Activity implements Renderer {
     private float[] matrix = new float[16];
     final String TAG = "CameraActivity";
-    private MyGLSurfaceView mSurfaceView;
+    private GLTouchSurfaceView mSurfaceView;
     private SurfaceTexture mSurfaceTexture;
     private Camera mCamera;
     private StreamFilter mFilter;

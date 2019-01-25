@@ -1,4 +1,4 @@
-package com.ccf.glesapp.camera2;
+package com.ccf.glesapp.camera2.texture;
 
 import android.content.Context;
 import android.util.AttributeSet;

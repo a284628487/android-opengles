@@ -1,11 +1,10 @@
-package com.ccf.glesapp.camera2;
+package com.ccf.glesapp.camera2.texture;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCaptureSession;
@@ -15,7 +14,6 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
-import android.hardware.camera2.params.ColorSpaceTransform;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
@@ -51,9 +49,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.Semaphore;
 
-public class MyCameraActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
+public class Camera2TextureViewActivity extends AppCompatActivity implements TextureView.SurfaceTextureListener {
 
-    private String TAG = "MyCameraActivity";
+    private String TAG = "Camera2TextureViewActivity";
 
     private AutoFitTextureView textureView;
 
@@ -202,7 +200,7 @@ public class MyCameraActivity extends AppCompatActivity implements TextureView.S
             //获取捕获的照片数据
             Log.e(TAG, "onImageAvailable : " + reader);
             Image image = reader.acquireNextImage();
-            mCameraHandler.post(new SaveImageRunnable(MyCameraActivity.this, image, mFile));
+            mCameraHandler.post(new SaveImageRunnable(Camera2TextureViewActivity.this, image, mFile));
         }
     };
 
@@ -365,7 +363,7 @@ public class MyCameraActivity extends AppCompatActivity implements TextureView.S
                 public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                                @NonNull CaptureRequest request,
                                                @NonNull TotalCaptureResult result) {
-                    Toast.makeText(MyCameraActivity.this, "保存到：" + mFile.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Camera2TextureViewActivity.this, "保存到：" + mFile.toString(), Toast.LENGTH_SHORT).show();
                     startPreview(); // 继续预览
                 }
             };
