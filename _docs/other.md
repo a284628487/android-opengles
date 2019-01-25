@@ -40,3 +40,14 @@ TextureView to be moved, transformed, animated, etc. For instance, you
 can make a TextureView semi-translucent by calling
 <code>myView.setAlpha(0.5f)</code>.</p>
 
+## EGL
+
+    /**
+     * 准备EGL环境，需要一个ELGS 2.0的Context，和支持Recording的Surface
+     * step:
+     * 1. EGL14.eglGetDisplay
+     * 2. EGL14.eglInitialize
+     * 3. EGL14.eglChooseConfig
+     * 4. EGL14.eglCreateContext
+     * 5. EGL14.eglCreateWindowSurface
+     
